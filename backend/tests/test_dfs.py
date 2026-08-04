@@ -1,9 +1,9 @@
-from grid_search.algorithms.bfs import bfs
+from grid_search.algorithms.dfs import dfs
 from grid_search.models.grid import Grid
 from grid_search.models.node import Node
 
 
-def test_bfs_finds_path():
+def test_dfs_finds_path():
 
     grid = Grid(
         [
@@ -13,7 +13,7 @@ def test_bfs_finds_path():
         ]
     )
 
-    result = bfs(
+    result = dfs(
         grid,
         Node(0, 0),
         Node(2, 2),
@@ -23,10 +23,9 @@ def test_bfs_finds_path():
 
     assert result.path[0] == Node(0, 0)
     assert result.path[-1] == Node(2, 2)
-    assert len(result.path) == 5
 
 
-def test_bfs_tracks_search_metrics():
+def test_dfs_tracks_search_metrics():
 
     grid = Grid(
         [
@@ -36,7 +35,7 @@ def test_bfs_tracks_search_metrics():
         ]
     )
 
-    result = bfs(
+    result = dfs(
         grid,
         Node(0, 0),
         Node(2, 2),
@@ -46,7 +45,7 @@ def test_bfs_tracks_search_metrics():
     assert result.nodes_discovered >= result.nodes_expanded
 
 
-def test_bfs_returns_none_when_no_path():
+def test_dfs_returns_none_when_no_path():
 
     grid = Grid(
         [
@@ -56,7 +55,7 @@ def test_bfs_returns_none_when_no_path():
         ]
     )
 
-    result = bfs(
+    result = dfs(
         grid,
         Node(0, 0),
         Node(2, 2),

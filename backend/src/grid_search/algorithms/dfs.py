@@ -1,22 +1,20 @@
-from collections import deque
-
 from grid_search.algorithms.utils import reconstruct_path
 from grid_search.models.grid import Grid
 from grid_search.models.node import Node
 from grid_search.models.search_results import SearchResult
 
 
-def bfs(grid: Grid, start: Node, goal: Node):
-    frontier = deque([start])
+def dfs(grid: Grid, start: Node, goal: Node) -> SearchResult:
+    frontier = [start]
 
     discovered = {start}
 
-    parents = {}
+    parents: dict[Node, Node] = {}
 
     nodes_expanded = 0
 
     while frontier:
-        current = frontier.popleft()
+        current = frontier.pop()
 
         nodes_expanded += 1
 
