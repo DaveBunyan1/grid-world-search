@@ -1,4 +1,5 @@
 from grid_search.algorithms.dfs import dfs
+from grid_search.models.cell import Cell
 from grid_search.models.grid import Grid
 from grid_search.models.node import Node
 
@@ -7,9 +8,21 @@ def test_dfs_finds_path():
 
     grid = Grid(
         [
-            ["S", ".", "."],
-            ["#", "#", "."],
-            [".", ".", "G"],
+            [
+                Cell(),
+                Cell(),
+                Cell(),
+            ],
+            [
+                Cell(blocked=True),
+                Cell(blocked=True),
+                Cell(),
+            ],
+            [
+                Cell(),
+                Cell(),
+                Cell(),
+            ],
         ]
     )
 
@@ -29,9 +42,21 @@ def test_dfs_tracks_search_metrics():
 
     grid = Grid(
         [
-            ["S", ".", "."],
-            ["#", "#", "."],
-            [".", ".", "G"],
+            [
+                Cell(),
+                Cell(),
+                Cell(),
+            ],
+            [
+                Cell(blocked=True),
+                Cell(blocked=True),
+                Cell(),
+            ],
+            [
+                Cell(),
+                Cell(),
+                Cell(),
+            ],
         ]
     )
 
@@ -49,9 +74,21 @@ def test_dfs_returns_none_when_no_path():
 
     grid = Grid(
         [
-            ["S", ".", "."],
-            ["#", "#", "#"],
-            [".", ".", "G"],
+            [
+                Cell(),
+                Cell(),
+                Cell(),
+            ],
+            [
+                Cell(blocked=True),
+                Cell(blocked=True),
+                Cell(blocked=True),
+            ],
+            [
+                Cell(),
+                Cell(),
+                Cell(),
+            ],
         ]
     )
 

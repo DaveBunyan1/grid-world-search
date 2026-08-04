@@ -1,8 +1,9 @@
+from grid_search.models.cell import Cell
 from grid_search.models.node import Node
 
 
 class Grid:
-    def __init__(self, cells: list[list[str]]):
+    def __init__(self, cells: list[list[Cell]]):
         self.cells = cells
 
     def get_neighbours(self, node: Node) -> list[Node]:
@@ -21,5 +22,8 @@ class Grid:
         return (
             0 <= row < len(self.cells)
             and 0 <= col < len(self.cells[0])
-            and self.cells[row][col] != "#"
+            and not self.cells[row][col].blocked
         )
+
+    def get_cost(self, node: Node) -> int:
+        return self.cells[node.row][node.col].cost

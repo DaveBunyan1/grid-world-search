@@ -8,3 +8,4 @@ class SearchResult:
     path: list[Node] | None
     nodes_expanded: int
     nodes_discovered: int
+    total_cost: int | None = None
