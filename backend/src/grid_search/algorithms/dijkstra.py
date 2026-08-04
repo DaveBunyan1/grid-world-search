@@ -28,6 +28,9 @@ def dijkstra(
     while frontier:
         current_cost, _, current = heapq.heappop(frontier)
 
+        if current_cost > cost_so_far[current]:
+            continue
+
         nodes_expanded += 1
 
         if current == goal:
@@ -35,16 +38,15 @@ def dijkstra(
                 path=reconstruct_path(parents, current),
                 nodes_expanded=nodes_expanded,
                 nodes_discovered=len(discovered),
+                total_cost=cost_so_far[current],
             )
 
         for neighbour in grid.get_neighbours(current):
-            new_cost = current_cost + grid.get_cost(neighbour)
+            new_cost = cost_so_far[current] + grid.get_cost(neighbour)
 
             if neighbour not in cost_so_far or new_cost < cost_so_far[neighbour]:
                 cost_so_far[neighbour] = new_cost
-
                 parents[neighbour] = current
-
                 discovered.add(neighbour)
 
                 heapq.heappush(
@@ -56,4 +58,5 @@ def dijkstra(
         path=None,
         nodes_expanded=nodes_expanded,
         nodes_discovered=len(discovered),
+        total_cost=None,
     )
