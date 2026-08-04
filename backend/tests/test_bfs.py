@@ -1,15 +1,27 @@
 from grid_search.algorithms.bfs import bfs
+from grid_search.models.cell import Cell
 from grid_search.models.grid import Grid
 from grid_search.models.node import Node
 
 
 def test_bfs_finds_path():
-
     grid = Grid(
         [
-            ["S", ".", "."],
-            ["#", "#", "."],
-            [".", ".", "G"],
+            [
+                Cell(),
+                Cell(),
+                Cell(),
+            ],
+            [
+                Cell(blocked=True),
+                Cell(blocked=True),
+                Cell(),
+            ],
+            [
+                Cell(),
+                Cell(),
+                Cell(),
+            ],
         ]
     )
 
@@ -30,9 +42,21 @@ def test_bfs_tracks_search_metrics():
 
     grid = Grid(
         [
-            ["S", ".", "."],
-            ["#", "#", "."],
-            [".", ".", "G"],
+            [
+                Cell(),
+                Cell(),
+                Cell(),
+            ],
+            [
+                Cell(blocked=True),
+                Cell(blocked=True),
+                Cell(),
+            ],
+            [
+                Cell(),
+                Cell(),
+                Cell(),
+            ],
         ]
     )
 
@@ -50,9 +74,21 @@ def test_bfs_returns_none_when_no_path():
 
     grid = Grid(
         [
-            ["S", ".", "."],
-            ["#", "#", "#"],
-            [".", ".", "G"],
+            [
+                Cell(),
+                Cell(),
+                Cell(),
+            ],
+            [
+                Cell(blocked=True),
+                Cell(blocked=True),
+                Cell(blocked=True),
+            ],
+            [
+                Cell(),
+                Cell(),
+                Cell(),
+            ],
         ]
     )
 

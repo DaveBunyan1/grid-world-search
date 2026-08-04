@@ -3,7 +3,7 @@ from collections import deque
 from grid_search.algorithms.utils import reconstruct_path
 from grid_search.models.grid import Grid
 from grid_search.models.node import Node
-from grid_search.models.search_results import SearchResult
+from grid_search.models.search_result import SearchResult
 
 
 def bfs(grid: Grid, start: Node, goal: Node):
