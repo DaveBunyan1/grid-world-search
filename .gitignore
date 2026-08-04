@@ -2,6 +2,7 @@
 .venv/
 __pycache__/
 *.py[cod]
+*.egg-info
 
 # Tooling Caches (Testing & Type Checking)
 .pytest_cache/
