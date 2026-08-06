@@ -8,13 +8,17 @@ version = "0.1.0"
 description = "Grid world pathfinding algorithms"
 readme = "README.md"
 requires-python = ">=3.14"
-dependencies = []
+dependencies = [
+    "fastapi>=0.110.0",
+    "uvicorn[standard]>=0.35.0",
+]
 
 [project.optional-dependencies]
 dev = [
     "pytest>=9.0",
     "ruff>=0.13",
     "mypy>=1.17",
+    "httpx2",
     "pandas",
     "seaborn"
 ]
@@ -69,6 +73,7 @@ minversion = "9.0"
 testpaths = ["tests"]
 pythonpath = ["src"]
 addopts = "-v --tb=short"
+
 
 # Coverage
 [tool.coverage.run]
