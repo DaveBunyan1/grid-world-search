@@ -1,4 +1,4 @@
-export interface Node {
+export interface GridNode {
   row: number;
   col: number;
 }
@@ -15,6 +15,8 @@ export interface Grid {
 export interface GenerateGridRequest {
   rows: number;
   cols: number;
+  start: GridNode;
+  goal: GridNode;
   obstacle_probability: number;
   seed?: number;
 }
@@ -22,12 +24,13 @@ export interface GenerateGridRequest {
 export interface SearchRequest {
   algorithm: string;
   grid: Grid;
-  start: Node;
-  goal: Node;
+  start: GridNode;
+  goal: GridNode;
 }
 
 export interface SearchResult {
-  path: Node[];
+  path: GridNode[];
+  visited: GridNode[];
   path_found: boolean;
   path_length: number | null;
   nodes_expanded: number;

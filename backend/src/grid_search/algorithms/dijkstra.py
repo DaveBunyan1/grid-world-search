@@ -18,6 +18,7 @@ def dijkstra(
     frontier: list[tuple[int, int, Node]] = [(0, next(counter), start)]
 
     discovered = {start}
+    visited = []
 
     parents: dict[Node, Node] = {}
 
@@ -27,6 +28,7 @@ def dijkstra(
 
     while frontier:
         current_cost, _, current = heapq.heappop(frontier)
+        visited.append(current)
 
         if current_cost > cost_so_far[current]:
             continue
@@ -36,6 +38,7 @@ def dijkstra(
         if current == goal:
             return SearchResult(
                 path=reconstruct_path(parents, current),
+                visited=visited,
                 nodes_expanded=nodes_expanded,
                 nodes_discovered=len(discovered),
                 total_cost=cost_so_far[current],
@@ -56,6 +59,7 @@ def dijkstra(
 
     return SearchResult(
         path=None,
+        visited=[],
         nodes_expanded=nodes_expanded,
         nodes_discovered=len(discovered),
         total_cost=None,

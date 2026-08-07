@@ -62,8 +62,17 @@ def search_result_to_schema(
         ]
     )
 
+    visited = [
+        NodeSchema(
+            row=node.row,
+            col=node.col,
+        )
+        for node in result.visited
+    ]
+
     return SearchResponse(
         path=path,
+        visited=visited,
         path_found=result.path_found,
         path_length=result.path_length,
         nodes_expanded=result.nodes_expanded,

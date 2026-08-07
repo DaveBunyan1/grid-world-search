@@ -19,6 +19,7 @@ def astar(
     frontier: list[tuple[int, int, Node]] = [(0, next(counter), start)]
 
     discovered = {start}
+    visited = []
 
     parents: dict[Node, Node] = {}
 
@@ -28,6 +29,7 @@ def astar(
 
     while frontier:
         _, _, current = heapq.heappop(frontier)
+        visited.append(current)
 
         nodes_expanded += 1
 
@@ -37,6 +39,7 @@ def astar(
                 nodes_expanded=nodes_expanded,
                 nodes_discovered=len(discovered),
                 total_cost=cost_so_far[current],
+                visited=visited,
             )
 
         for neighbour in grid.get_neighbours(current):
@@ -65,4 +68,5 @@ def astar(
         nodes_expanded=nodes_expanded,
         nodes_discovered=len(discovered),
         total_cost=None,
+        visited=[],
     )
