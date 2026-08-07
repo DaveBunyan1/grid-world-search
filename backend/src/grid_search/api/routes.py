@@ -1,5 +1,6 @@
 from fastapi import APIRouter
 
+from grid_search.algorithms.search_event_recorder import SearchEventRecorder
 from grid_search.api.algorithm_registry import get_algorithm, get_algorithm_names
 from grid_search.api.mappers import (
     grid_from_schema,
@@ -73,10 +74,13 @@ def search(
         request.algorithm,
     )
 
+    recorder = SearchEventRecorder()
+
     result = algorithm(
         grid_from_schema(request.grid),
         node_from_schema(request.start),
         node_from_schema(request.goal),
+        recorder,
     )
 
     return search_result_to_schema(result)

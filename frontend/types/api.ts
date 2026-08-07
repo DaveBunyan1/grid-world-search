@@ -30,10 +30,23 @@ export interface SearchRequest {
 
 export interface SearchResult {
   path: GridNode[];
-  visited: GridNode[];
+  events: SearchEvent[];
+  expanded_nodes: GridNode[];
   path_found: boolean;
   path_length: number | null;
   nodes_expanded: number;
   nodes_discovered: number;
   total_cost: number | null;
+}
+
+export type SearchEventType = "frontier_add" | "expand" | "path";
+
+export interface SearchEvent {
+  event_type: SearchEventType;
+
+  node: GridNode;
+
+  g_cost: number | null;
+
+  h_cost: number | null;
 }

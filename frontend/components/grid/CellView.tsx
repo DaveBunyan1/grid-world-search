@@ -13,7 +13,8 @@ interface CellViewProps {
   isGoal: boolean;
 
   isPath: boolean;
-  isVisited: boolean;
+  isExpanded: boolean;
+  isFrontier: boolean;
 
   onMouseDown(row: number, col: number, button: number): void;
 
@@ -26,7 +27,8 @@ export default function CellView({
   isStart,
   isGoal,
   isPath,
-  isVisited,
+  isExpanded,
+  isFrontier,
   onMouseDown,
   onMouseEnter,
 }: CellViewProps) {
@@ -40,8 +42,10 @@ export default function CellView({
     className += " bg-black";
   } else if (isPath) {
     className += " bg-yellow-400";
-  } else if (isVisited) {
+  } else if (isExpanded) {
     className += " bg-purple-400";
+  } else if (isFrontier) {
+    className += " bg-slate-200";
   } else {
     className += " bg-sky-900";
   }
