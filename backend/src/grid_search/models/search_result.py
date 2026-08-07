@@ -6,6 +6,7 @@ from grid_search.models.node import Node
 @dataclass
 class SearchResult:
     path: list[Node] | None
+    visited: list[Node]
     nodes_expanded: int
     nodes_discovered: int
     total_cost: int | None = None

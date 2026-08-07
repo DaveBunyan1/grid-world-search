@@ -37,10 +37,14 @@ def generate_grid(
     request: GenerateGridRequest,
 ) -> GenerateGridResponse:
 
-    start = Node(0, 0)
+    start = Node(
+        request.start.row,
+        request.start.col,
+    )
+
     goal = Node(
-        request.rows - 1,
-        request.cols - 1,
+        request.goal.row,
+        request.goal.col,
     )
 
     grid = create_random_grid(

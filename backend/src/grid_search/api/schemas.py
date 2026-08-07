@@ -21,6 +21,8 @@ class GenerateGridRequest(BaseModel):
     rows: int
     cols: int
     obstacle_probability: float = 0.2
+    start: NodeSchema
+    goal: NodeSchema
     seed: int | None = None
 
 
@@ -40,6 +42,7 @@ class SearchRequest(BaseModel):
 
 class SearchResponse(BaseModel):
     path: list[NodeSchema]
+    visited: list[NodeSchema]
 
     path_found: bool
 

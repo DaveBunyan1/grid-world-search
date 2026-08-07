@@ -10,6 +10,7 @@ def bfs(grid: Grid, start: Node, goal: Node):
     frontier = deque([start])
 
     discovered = {start}
+    visited = []
 
     parents = {}
 
@@ -17,12 +18,14 @@ def bfs(grid: Grid, start: Node, goal: Node):
 
     while frontier:
         current = frontier.popleft()
+        visited.append(current)
 
         nodes_expanded += 1
 
         if current == goal:
             return SearchResult(
                 path=reconstruct_path(parents, current),
+                visited=visited,
                 nodes_expanded=nodes_expanded,
                 nodes_discovered=len(discovered),
             )
@@ -37,6 +40,7 @@ def bfs(grid: Grid, start: Node, goal: Node):
 
     return SearchResult(
         path=None,
+        visited=[],
         nodes_expanded=nodes_expanded,
         nodes_discovered=len(discovered),
     )
