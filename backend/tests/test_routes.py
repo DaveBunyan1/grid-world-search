@@ -28,6 +28,14 @@ def test_generate_grid():
             "cols": 5,
             "obstacle_probability": 0.0,
             "seed": 42,
+            "start": {
+                "row": 0,
+                "col": 0,
+            },
+            "goal": {
+                "row": 4,
+                "col": 4,
+            },
         },
     )
 
@@ -78,3 +86,77 @@ def test_search_bfs():
     assert result["path_found"] is True
     assert result["path_length"] == 3
     assert result["nodes_expanded"] > 0
+
+
+def test_search_returns_events():
+
+    response = client.post(
+        "/search",
+        json={
+            "algorithm": "bfs",
+            "grid": {
+                "cells": [
+                    [
+                        {"blocked": False, "cost": 1},
+                        {"blocked": False, "cost": 1},
+                    ],
+                    [
+                        {"blocked": False, "cost": 1},
+                        {"blocked": False, "cost": 1},
+                    ],
+                ]
+            },
+            "start": {
+                "row": 0,
+                "col": 0,
+            },
+            "goal": {
+                "row": 1,
+                "col": 1,
+            },
+        },
+    )
+
+    assert response.status_code == 200
+
+    data = response.json()
+
+    assert len(data["events"]) > 0
+
+    assert data["events"][0]["event_type"] == "frontier_add"
+
+
+def test_search_returns_path_events():
+
+    response = client.post(
+        "/search",
+        json={
+            "algorithm": "bfs",
+            "grid": {
+                "cells": [
+                    [
+                        {"blocked": False, "cost": 1},
+                        {"blocked": False, "cost": 1},
+                    ],
+                    [
+                        {"blocked": False, "cost": 1},
+                        {"blocked": False, "cost": 1},
+                    ],
+                ]
+            },
+            "start": {
+                "row": 0,
+                "col": 0,
+            },
+            "goal": {
+                "row": 1,
+                "col": 1,
+            },
+        },
+    )
+
+    data = response.json()
+
+    path_events = [event for event in data["events"] if event["event_type"] == "path"]
+
+    assert len(path_events) > 0

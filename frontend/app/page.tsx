@@ -14,7 +14,7 @@ import { updateCell } from "@/lib/grid/updateCell";
 import AlgorithmSelector from "@/components/controls/AlgorithmSelector";
 
 export default function Home() {
-  const [editor, setEditor] = useState(createDefaultEditorState());
+  const [editor, setEditor] = useState(() => createDefaultEditorState());
 
   const [size, setSize] = useState(25);
 
@@ -38,9 +38,25 @@ export default function Home() {
     setEditor((previous) => ({
       ...previous,
       path: result.path,
-      visited: result.visited,
+      events: result.events,
+      animationIndex: 0,
     }));
   }
+
+  useEffect(() => {
+    if (editor.animationIndex >= editor.events.length) {
+      return;
+    }
+
+    const timer = setTimeout(() => {
+      setEditor((previous) => ({
+        ...previous,
+        animationIndex: previous.animationIndex + 1,
+      }));
+    }, 1);
+
+    return () => clearTimeout(timer);
+  }, [editor.animationIndex, editor.events.length]);
 
   useEffect(() => {
     function handleKeyDown(event: KeyboardEvent) {
@@ -119,7 +135,7 @@ export default function Home() {
       start,
       goal,
       path: [],
-      visited: [],
+      events: [],
     }));
   }
 

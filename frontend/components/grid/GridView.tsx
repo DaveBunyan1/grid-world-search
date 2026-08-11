@@ -3,6 +3,7 @@
 import { EditorState } from "@/types/editor";
 import CellView from "./CellView";
 import { useState } from "react";
+import { eventPositions } from "@/lib/grid/eventPositions";
 
 interface GridViewProps {
   editor: EditorState;
@@ -23,6 +24,12 @@ export default function GridView({
   const [mouseDown, setMouseDown] = useState(false);
 
   const [dragMode, setDragMode] = useState<boolean | null>(null);
+
+  const visibleEvents = editor.events.slice(0, editor.animationIndex);
+
+  const expanded = eventPositions(visibleEvents, "expand");
+  const path = eventPositions(visibleEvents, "path");
+  const frontier = eventPositions(visibleEvents, "frontier_add");
 
   function handleMouseDown(row: number, col: number, button: number) {
     if (editor.tool === "start") {
@@ -66,12 +73,7 @@ export default function GridView({
     >
       {editor.grid.cells.map((row, rowIndex) =>
         row.map((cell, colIndex) => {
-          const isPath = editor.path.some(
-            (node) => node.row === rowIndex && node.col === colIndex,
-          );
-          const isVisited = editor.visited.some(
-            (node) => node.row === rowIndex && node.col === colIndex,
-          );
+          const key = `${rowIndex}-${colIndex}`;
 
           return (
             <CellView
@@ -87,8 +89,9 @@ export default function GridView({
               isGoal={
                 editor.goal.row === rowIndex && editor.goal.col === colIndex
               }
-              isPath={isPath}
-              isVisited={isVisited}
+              isExpanded={expanded.has(key)}
+              isFrontier={frontier.has(key)}
+              isPath={path.has(key)}
               onMouseDown={handleMouseDown}
               onMouseEnter={handleMouseEnter}
             />

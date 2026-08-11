@@ -17,6 +17,13 @@ class GridSchema(BaseModel):
     cells: list[list[CellSchema]]
 
 
+class SearchEventSchema(BaseModel):
+    event_type: str
+    node: NodeSchema
+    g_cost: float | None = None
+    h_cost: float | None = None
+
+
 class GenerateGridRequest(BaseModel):
     rows: int
     cols: int
@@ -42,8 +49,9 @@ class SearchRequest(BaseModel):
 
 class SearchResponse(BaseModel):
     path: list[NodeSchema]
-    visited: list[NodeSchema]
+    events: list[SearchEventSchema]
 
+    expanded_nodes: list[NodeSchema]
     path_found: bool
 
     path_length: int | None

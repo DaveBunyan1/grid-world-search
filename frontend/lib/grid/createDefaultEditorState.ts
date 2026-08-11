@@ -24,6 +24,8 @@ export function createDefaultEditorState(): EditorState {
 
     algorithm: "astar",
     path: [],
-    visited: [],
+    events: [],
+
+    animationIndex: 0,
   };
 }

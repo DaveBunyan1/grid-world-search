@@ -1,22 +1,27 @@
 import { Cell } from "@/types/api";
+import { useMemo } from "react";
+
+export type CellVisualState =
+  | "start"
+  | "goal"
+  | "blocked"
+  | "path"
+  | "visited"
+  | "frontier"
+  | "empty";
 
 interface CellViewProps {
   cell: Cell;
-
   position: {
     row: number;
     col: number;
   };
-
   isStart: boolean;
-
   isGoal: boolean;
-
   isPath: boolean;
-  isVisited: boolean;
-
+  isExpanded: boolean;
+  isFrontier: boolean;
   onMouseDown(row: number, col: number, button: number): void;
-
   onMouseEnter(row: number, col: number): void;
 }
 
@@ -26,44 +31,59 @@ export default function CellView({
   isStart,
   isGoal,
   isPath,
-  isVisited,
+  isExpanded,
+  isFrontier,
   onMouseDown,
   onMouseEnter,
 }: CellViewProps) {
-  let className = "w-6 h-6 border";
+  // Determine active visual state using priority order
+  const visualState: CellVisualState = useMemo(() => {
+    if (isStart) return "start";
+    if (isGoal) return "goal";
+    if (cell.blocked) return "blocked";
+    if (isPath) return "path";
+    if (isExpanded) return "visited";
+    if (isFrontier) return "frontier";
+    return "empty";
+  }, [isStart, isGoal, cell.blocked, isPath, isExpanded, isFrontier]);
 
-  if (isStart) {
-    className += " bg-green-500";
-  } else if (isGoal) {
-    className += " bg-red-500";
-  } else if (cell.blocked) {
-    className += " bg-black";
-  } else if (isPath) {
-    className += " bg-yellow-400";
-  } else if (isVisited) {
-    className += " bg-purple-400";
-  } else {
-    className += " bg-sky-900";
-  }
+  // Color & styling map
+  const stateStyles: Record<CellVisualState, string> = {
+    start:
+      "bg-emerald-500 shadow-lg shadow-emerald-500/50 scale-95 rounded-sm z-10",
+    goal: "bg-rose-500 shadow-lg shadow-rose-500/50 scale-95 rounded-sm z-10",
+    blocked: "bg-black border-slate-300/50",
+    path: "bg-amber-400 shadow-md shadow-amber-400/40 animate-path-pop z-10",
+    visited: "bg-indigo-600/80 animate-visited-pop border-indigo-500/30",
+    frontier: "bg-teal-400/70 animate-frontier-pop border-teal-300/40",
+    empty:
+      "bg-slate-800 border-slate-600/60 hover:bg-slate-800/50 transition-colors",
+  };
+
+  const isInteractive = !isStart && !isGoal;
 
   return (
     <div
       onMouseDown={(event) => {
         event.preventDefault();
-
-        if (isStart || isGoal) {
-          return;
+        if (isInteractive) {
+          onMouseDown(position.row, position.col, event.button);
         }
-
-        onMouseDown(position.row, position.col, event.button);
       }}
       onMouseEnter={() => {
-        if (!isStart && !isGoal) {
+        if (isInteractive) {
           onMouseEnter(position.row, position.col);
         }
       }}
       onContextMenu={(event) => event.preventDefault()}
-      className={className}
-    />
+      className={`
+        w-6 h-6 border-[0.5px] select-none transition-all duration-150 ease-out flex items-center justify-center
+        ${stateStyles[visualState]}
+        ${isInteractive ? "cursor-pointer" : "cursor-default"}
+      `}
+    >
+      {isStart && <span className="text-white text-[10px] font-black">S</span>}
+      {isGoal && <span className="text-white text-[10px] font-black">G</span>}
+    </div>
   );
 }

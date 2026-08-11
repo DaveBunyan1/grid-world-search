@@ -2,11 +2,13 @@ from grid_search.api.schemas import (
     CellSchema,
     GridSchema,
     NodeSchema,
+    SearchEventSchema,
     SearchResponse,
 )
 from grid_search.models.cell import Cell
 from grid_search.models.grid import Grid
 from grid_search.models.node import Node
+from grid_search.models.search_event import SearchEvent
 from grid_search.models.search_result import SearchResult
 
 
@@ -47,6 +49,21 @@ def grid_from_schema(grid: GridSchema) -> Grid:
     )
 
 
+def search_event_to_schema(
+    event: SearchEvent,
+) -> SearchEventSchema:
+
+    return SearchEventSchema(
+        event_type=event.event_type,
+        node=NodeSchema(
+            row=event.node.row,
+            col=event.node.col,
+        ),
+        g_cost=event.g_cost,
+        h_cost=event.h_cost,
+    )
+
+
 def search_result_to_schema(
     result: SearchResult,
 ) -> SearchResponse:
@@ -62,17 +79,16 @@ def search_result_to_schema(
         ]
     )
 
-    visited = [
-        NodeSchema(
-            row=node.row,
-            col=node.col,
-        )
-        for node in result.visited
-    ]
-
     return SearchResponse(
         path=path,
-        visited=visited,
+        events=[search_event_to_schema(event) for event in result.events],
+        expanded_nodes=[
+            NodeSchema(
+                row=node.row,
+                col=node.col,
+            )
+            for node in result.expanded_nodes
+        ],
         path_found=result.path_found,
         path_length=result.path_length,
         nodes_expanded=result.nodes_expanded,

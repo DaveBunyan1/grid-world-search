@@ -1,14 +1,16 @@
 from dataclasses import dataclass
 
 from grid_search.models.node import Node
+from grid_search.models.search_event import SearchEvent
 
 
 @dataclass
 class SearchResult:
     path: list[Node] | None
-    visited: list[Node]
+    expanded_nodes: list[Node]
     nodes_expanded: int
     nodes_discovered: int
+    events: list[SearchEvent]
     total_cost: int | None = None
 
     @property
