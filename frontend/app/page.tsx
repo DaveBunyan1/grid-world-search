@@ -14,7 +14,7 @@ import { updateCell } from "@/lib/grid/updateCell";
 import AlgorithmSelector from "@/components/controls/AlgorithmSelector";
 
 export default function Home() {
-  const [editor, setEditor] = useState(createDefaultEditorState());
+  const [editor, setEditor] = useState(() => createDefaultEditorState());
 
   const [size, setSize] = useState(25);
 
@@ -53,7 +53,7 @@ export default function Home() {
         ...previous,
         animationIndex: previous.animationIndex + 1,
       }));
-    }, 30);
+    }, 1);
 
     return () => clearTimeout(timer);
   }, [editor.animationIndex, editor.events.length]);
