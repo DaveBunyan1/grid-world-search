@@ -22,4 +22,4 @@ class SearchResult:
         if self.path is None:
             return None
 
-        return len(self.path)
+        return max(0, len(self.path) - 1)

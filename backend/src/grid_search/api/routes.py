@@ -9,11 +9,12 @@ from grid_search.api.mappers import (
     search_result_to_schema,
 )
 from grid_search.api.schemas import (
+    BenchmarkResponse,
     GenerateGridRequest,
     GenerateGridResponse,
     SearchRequest,
-    SearchResponse,
 )
+from grid_search.benchmarks.runner import benchmark_search
 from grid_search.generators.grid_generator import create_random_grid
 from grid_search.models.node import Node
 
@@ -64,11 +65,11 @@ def generate_grid(
 
 @router.post(
     "/search",
-    response_model=SearchResponse,
+    response_model=BenchmarkResponse,
 )
 def search(
     request: SearchRequest,
-) -> SearchResponse:
+) -> BenchmarkResponse:
 
     algorithm = get_algorithm(
         request.algorithm,
@@ -76,11 +77,19 @@ def search(
 
     recorder = SearchEventRecorder()
 
-    result = algorithm(
+    runtime_ms, memory_bytes, result = benchmark_search(
+        algorithm,
         grid_from_schema(request.grid),
         node_from_schema(request.start),
         node_from_schema(request.goal),
         recorder,
     )
 
-    return search_result_to_schema(result)
+    payload = BenchmarkResponse(
+        algorithm=request.algorithm,
+        runtime_ms=runtime_ms,
+        memory_bytes=memory_bytes,
+        result=search_result_to_schema(result),
+    )
+
+    return payload

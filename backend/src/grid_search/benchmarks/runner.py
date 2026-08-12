@@ -1,7 +1,8 @@
 import time
 import tracemalloc
-from collections.abc import Callable
 
+from grid_search.algorithms.search_event_recorder import SearchEventRecorder
+from grid_search.api.algorithm_registry import Algorithm
 from grid_search.benchmarks.config import BenchmarkConfig
 from grid_search.benchmarks.models import BenchmarkRecord
 from grid_search.generators.grid_generator import create_random_grid
@@ -9,24 +10,19 @@ from grid_search.models.grid import Grid
 from grid_search.models.node import Node
 from grid_search.models.search_result import SearchResult
 
-Algorithm = Callable[[Grid, Node, Node], SearchResult]
-
 
 def benchmark_search(
     algorithm: Algorithm,
     grid: Grid,
     start: Node,
     goal: Node,
+    recorder: SearchEventRecorder | None = None,
 ) -> tuple[float, int, SearchResult]:
     tracemalloc.start()
 
     start_time = time.perf_counter()
 
-    result = algorithm(
-        grid,
-        start,
-        goal,
-    )
+    result = algorithm(grid, start, goal, recorder)
 
     end_time = time.perf_counter()
 

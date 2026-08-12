@@ -53,8 +53,8 @@ export default function CellView({
       "bg-emerald-500 shadow-lg shadow-emerald-500/50 scale-95 rounded-sm z-10",
     goal: "bg-rose-500 shadow-lg shadow-rose-500/50 scale-95 rounded-sm z-10",
     blocked: "bg-black border-slate-300/50",
-    path: "bg-amber-400 shadow-md shadow-amber-400/40 animate-path-pop z-10",
-    visited: "bg-indigo-600/80 animate-visited-pop border-indigo-500/30",
+    path: "bg-amber-400 shadow-md shadow-amber-400/40 animate-path-pop z-10 border-gray-700",
+    visited: "bg-indigo-600/80 animate-visited-pop border-slate-100/30",
     frontier: "bg-teal-400/70 animate-frontier-pop border-teal-300/40",
     empty:
       "bg-slate-800 border-slate-600/60 hover:bg-slate-800/50 transition-colors",

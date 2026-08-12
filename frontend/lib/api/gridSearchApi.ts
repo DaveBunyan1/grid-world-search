@@ -1,4 +1,5 @@
 import {
+  BenchmarkResult,
   GenerateGridRequest,
   Grid,
   SearchRequest,
@@ -10,5 +11,5 @@ export interface GridSearchApi {
 
   generateGrid(request: GenerateGridRequest): Promise<{ grid: Grid }>;
 
-  search(request: SearchRequest): Promise<SearchResult>;
+  search(request: SearchRequest): Promise<BenchmarkResult>;
 }

@@ -50,3 +50,10 @@ export interface SearchEvent {
 
   h_cost: number | null;
 }
+
+export interface BenchmarkResult {
+  algorithm: string;
+  runtime_ms: number;
+  memory_bytes: number;
+  result: SearchResult;
+}

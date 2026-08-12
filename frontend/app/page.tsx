@@ -12,6 +12,8 @@ import { api } from "@/lib/api";
 import { DENSITY_PROBABILITY } from "@/lib/grid/density";
 import { updateCell } from "@/lib/grid/updateCell";
 import AlgorithmSelector from "@/components/controls/AlgorithmSelector";
+import SearchMetrics from "@/components/SearchMetrics";
+import BenchmarkMetrics from "@/components/BenchmarkMetrics";
 
 export default function Home() {
   const [editor, setEditor] = useState(() => createDefaultEditorState());
@@ -19,6 +21,9 @@ export default function Home() {
   const [size, setSize] = useState(25);
 
   const [density, setDensity] = useState<GridDensity>("empty");
+
+  const [runtimeMs, setRuntimeMs] = useState(0);
+  const [memoryBytes, setMemoryBytes] = useState(0);
 
   function handleAlgorithmChange(algorithm: string) {
     setEditor((previous) => ({
@@ -28,18 +33,25 @@ export default function Home() {
   }
 
   async function runSearch() {
-    const result = await api.search({
+    const response = await api.search({
       grid: editor.grid,
       start: editor.start,
       goal: editor.goal,
       algorithm: editor.algorithm,
     });
 
+    setRuntimeMs(response.runtime_ms);
+    setMemoryBytes(response.memory_bytes);
+
+    const result = response.result;
+
+    console.log(result);
     setEditor((previous) => ({
       ...previous,
       path: result.path,
       events: result.events,
       animationIndex: 0,
+      searchResult: result,
     }));
   }
 
@@ -136,6 +148,7 @@ export default function Home() {
       goal,
       path: [],
       events: [],
+      searchResult: null,
     }));
   }
 
@@ -157,12 +170,18 @@ export default function Home() {
       <button onClick={runSearch} className="px-4 py-2 border rounded">
         Search
       </button>
-      <GridView
-        editor={editor}
-        onCellChange={handleCellChange}
-        onMoveStart={handleMoveStart}
-        onMoveGoal={handleMoveGoal}
-      />
+      <div className="flex">
+        <GridView
+          editor={editor}
+          onCellChange={handleCellChange}
+          onMoveStart={handleMoveStart}
+          onMoveGoal={handleMoveGoal}
+        />
+        {editor.searchResult && <SearchMetrics result={editor.searchResult} />}
+        {editor.searchResult && (
+          <BenchmarkMetrics runtime_ms={runtimeMs} memory_bytes={memoryBytes} />
+        )}
+      </div>
     </main>
   );
 }
