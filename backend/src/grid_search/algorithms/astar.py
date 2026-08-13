@@ -5,13 +5,13 @@ from grid_search.algorithms.heuristics import manhattan_distance
 from grid_search.algorithms.search_event_recorder import SearchEventRecorder
 from grid_search.algorithms.search_state import SearchState
 from grid_search.algorithms.utils import reconstruct_path
-from grid_search.models.grid import Grid
+from grid_search.models.graph import Graph
 from grid_search.models.node import Node
 from grid_search.models.search_result import SearchResult
 
 
 def astar(
-    grid: Grid,
+    graph: Graph,
     start: Node,
     goal: Node,
     recorder: SearchEventRecorder | None = None,
@@ -40,8 +40,8 @@ def astar(
                 events=state.events,
             )
 
-        for neighbour in grid.get_neighbours(current):
-            new_cost = cost_so_far[current] + grid.get_cost(neighbour)
+        for neighbour in graph.get_neighbours(current):
+            new_cost = cost_so_far[current] + graph.get_edge_cost(current, neighbour)
 
             if neighbour not in cost_so_far:
                 cost_so_far[neighbour] = new_cost

@@ -12,12 +12,17 @@ export interface Grid {
   cells: Cell[][];
 }
 
+export type GridType = "unweighted" | "weighted";
+
 export interface GenerateGridRequest {
   rows: number;
   cols: number;
   start: GridNode;
   goal: GridNode;
   obstacle_probability: number;
+  grid_type: GridType;
+  min_cost?: number;
+  max_cost?: number;
   seed?: number;
 }
 

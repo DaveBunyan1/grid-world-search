@@ -4,9 +4,11 @@ import { EditorState } from "@/types/editor";
 import CellView from "./CellView";
 import { useState } from "react";
 import { eventPositions } from "@/lib/grid/eventPositions";
+import { GridType } from "@/types/api";
 
 interface GridViewProps {
   editor: EditorState;
+  gridType: GridType;
 
   onCellChange(row: number, col: number, blocked: boolean): void;
 
@@ -17,6 +19,7 @@ interface GridViewProps {
 
 export default function GridView({
   editor,
+  gridType,
   onCellChange,
   onMoveStart,
   onMoveGoal,
@@ -92,6 +95,7 @@ export default function GridView({
               isExpanded={expanded.has(key)}
               isFrontier={frontier.has(key)}
               isPath={path.has(key)}
+              showWeight={gridType === "weighted"}
               onMouseDown={handleMouseDown}
               onMouseEnter={handleMouseEnter}
             />

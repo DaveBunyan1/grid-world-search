@@ -8,6 +8,7 @@ import { DENSITY_PROBABILITY } from "@/lib/grid/density";
 import { updateCell } from "@/lib/grid/updateCell";
 import { BenchmarkResults } from "@/types/metrics";
 import { ComparisonResponse } from "@/types/comparison";
+import { GridType } from "@/types/api";
 
 const ANIMATION_DELAY_MS = 16;
 const DEFAULT_SIZE = 25;
@@ -19,6 +20,7 @@ export function useGridSearch() {
   const [benchmarkResult, setBenchmarkResult] =
     useState<BenchmarkResults | null>(null);
   const [comparison, setComparison] = useState<ComparisonResponse | null>(null);
+  const [gridType, setGridType] = useState<GridType>("unweighted");
 
   const [isSearching, setIsSearching] = useState(false);
   const [isComparing, setIsComparing] = useState(false);
@@ -107,45 +109,50 @@ export function useGridSearch() {
     }
   }, [editor.grid, editor.start, editor.goal, isSearching, isComparing]);
 
-  const generateGrid = useCallback(async () => {
-    if (isGenerating) return;
+  const generateGrid = useCallback(
+    async (gridType: GridType) => {
+      if (isGenerating) return;
 
-    setIsGenerating(true);
-    setError(null);
-    setComparison(null);
+      setIsGenerating(true);
+      setError(null);
+      setComparison(null);
+      setGridType(gridType);
 
-    const sizeChanged = editor.grid.cells.length !== size;
+      const sizeChanged = editor.grid.cells.length !== size;
 
-    const start = sizeChanged ? { row: 0, col: 0 } : editor.start;
+      const start = sizeChanged ? { row: 0, col: 0 } : editor.start;
 
-    const goal = sizeChanged ? { row: size - 2, col: size - 2 } : editor.goal;
+      const goal = sizeChanged ? { row: size - 2, col: size - 2 } : editor.goal;
 
-    try {
-      const response = await api.generateGrid({
-        rows: size,
-        cols: size,
-        obstacle_probability: DENSITY_PROBABILITY[density],
-        start: start,
-        goal: goal,
-      });
+      try {
+        const response = await api.generateGrid({
+          rows: size,
+          cols: size,
+          obstacle_probability: DENSITY_PROBABILITY[density],
+          start: start,
+          goal: goal,
+          grid_type: gridType,
+        });
 
-      setEditor((prev) => ({
-        ...prev,
-        grid: response.grid,
-        start,
-        goal,
-        path: [],
-        events: [],
-        animationIndex: 0,
-        searchResult: null,
-      }));
-      setBenchmarkResult(null);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Grid generation failed");
-    } finally {
-      setIsGenerating(false);
-    }
-  }, [size, density, editor.start, editor.goal, isGenerating]);
+        setEditor((prev) => ({
+          ...prev,
+          grid: response.grid,
+          start,
+          goal,
+          path: [],
+          events: [],
+          animationIndex: 0,
+          searchResult: null,
+        }));
+        setBenchmarkResult(null);
+      } catch (err) {
+        setError(err instanceof Error ? err.message : "Grid generation failed");
+      } finally {
+        setIsGenerating(false);
+      }
+    },
+    [size, density, editor.start, editor.goal, isGenerating],
+  );
 
   // ─── Editor mutation handlers ────────────────────────────────────
 
@@ -259,6 +266,7 @@ export function useGridSearch() {
     isGenerating,
     error,
     comparison,
+    gridType,
 
     // Setters for controls
     setSize,

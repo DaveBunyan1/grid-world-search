@@ -21,8 +21,22 @@ interface CellViewProps {
   isPath: boolean;
   isExpanded: boolean;
   isFrontier: boolean;
+  showWeight: boolean;
+  costRange?: { min: number; max: number };
   onMouseDown(row: number, col: number, button: number): void;
   onMouseEnter(row: number, col: number): void;
+}
+
+function costToHeatmapColor(t: number): string {
+  // Clamp
+  const v = Math.max(0, Math.min(1, t));
+
+  // You can swap this for any palette you like
+  const r = Math.round(30 + (100 - 30) * v);
+  const g = Math.round(41 + (116 - 41) * v);
+  const b = Math.round(59 + (139 - 59) * v);
+
+  return `rgb(${r}, ${g}, ${b})`;
 }
 
 export default function CellView({
@@ -33,6 +47,8 @@ export default function CellView({
   isPath,
   isExpanded,
   isFrontier,
+  showWeight,
+  costRange = { min: 1, max: 10 },
   onMouseDown,
   onMouseEnter,
 }: CellViewProps) {
@@ -60,6 +76,15 @@ export default function CellView({
       "bg-slate-800 border-slate-600/60 hover:bg-slate-800/50 transition-colors",
   };
 
+  const heatmapStyle =
+    visualState === "empty"
+      ? {
+          backgroundColor: costToHeatmapColor(
+            (cell.cost - costRange.min) / (costRange.max - costRange.min || 1),
+          ),
+        }
+      : undefined;
+
   const isInteractive = !isStart && !isGoal;
 
   return (
@@ -76,14 +101,21 @@ export default function CellView({
         }
       }}
       onContextMenu={(event) => event.preventDefault()}
+      style={heatmapStyle}
       className={`
         w-6 h-6 border-[0.5px] select-none transition-all duration-150 ease-out flex items-center justify-center
-        ${stateStyles[visualState]}
+        ${visualState !== "empty" ? stateStyles[visualState] : "border-slate-600/40 hover:brightness-110"}
         ${isInteractive ? "cursor-pointer" : "cursor-default"}
       `}
     >
       {isStart && <span className="text-white text-[10px] font-black">S</span>}
       {isGoal && <span className="text-white text-[10px] font-black">G</span>}
+
+      {showWeight && !isStart && !isGoal && !cell.blocked && (
+        <span className="text-[9px] font-semibold text-slate-200">
+          {cell.cost}
+        </span>
+      )}
     </div>
   );
 }

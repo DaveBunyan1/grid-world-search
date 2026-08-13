@@ -19,6 +19,7 @@ export default function Home() {
     isGenerating,
     error,
     comparison,
+    gridType,
     setSize,
     setDensity,
     runSearch,
@@ -49,7 +50,8 @@ export default function Home() {
             density={density}
             onSizeChange={setSize}
             onDensityChange={setDensity}
-            onGenerate={generateGrid}
+            onGenerateUnweighted={() => generateGrid("unweighted")}
+            onGenerateWeighted={() => generateGrid("weighted")}
           />
 
           <AlgorithmSelector
@@ -74,6 +76,7 @@ export default function Home() {
         <div className="flex gap-5">
           <GridView
             editor={editor}
+            gridType={gridType}
             onCellChange={handleCellChange}
             onMoveStart={handleMoveStart}
             onMoveGoal={handleMoveGoal}

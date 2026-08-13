@@ -1,3 +1,4 @@
+from enum import StrEnum
 from typing import Literal
 
 from pydantic import BaseModel
@@ -24,12 +25,20 @@ class SearchEventSchema(BaseModel):
     h_cost: float | None = None
 
 
+class GridType(StrEnum):
+    UNWEIGHTED = "unweighted"
+    WEIGHTED = "weighted"
+
+
 class GenerateGridRequest(BaseModel):
     rows: int
     cols: int
     obstacle_probability: float = 0.2
     start: NodeSchema
     goal: NodeSchema
+    grid_type: GridType = GridType.UNWEIGHTED
+    min_cost: int = 1
+    max_cost: int = 10
     seed: int | None = None
 
 
