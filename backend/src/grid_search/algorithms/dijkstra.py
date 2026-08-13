@@ -42,7 +42,20 @@ def dijkstra(
         for neighbour in grid.get_neighbours(current):
             new_cost = cost_so_far[current] + grid.get_cost(neighbour)
 
-            if neighbour not in cost_so_far or new_cost < cost_so_far[neighbour]:
+            if neighbour not in cost_so_far:
+                cost_so_far[neighbour] = new_cost
+
+                state.discover(
+                    current,
+                    neighbour,
+                )
+
+                heapq.heappush(
+                    frontier,
+                    (new_cost, next(counter), neighbour),
+                )
+
+            elif new_cost < cost_so_far[neighbour]:
                 cost_so_far[neighbour] = new_cost
 
                 state.update_parent(

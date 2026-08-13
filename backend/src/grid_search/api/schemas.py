@@ -63,5 +63,12 @@ class SearchResponse(BaseModel):
     total_cost: int | None
 
 
+class BenchmarkResponse(BaseModel):
+    algorithm: str
+    runtime_ms: float
+    memory_bytes: int
+    result: SearchResponse
+
+
 class GenerateGridResponse(BaseModel):
     grid: GridSchema

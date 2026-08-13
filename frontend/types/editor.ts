@@ -1,4 +1,4 @@
-import { Grid, GridNode, SearchEvent } from "./api";
+import { Grid, GridNode, SearchEvent, SearchResult } from "./api";
 
 export interface EditorState {
   grid: Grid;
@@ -11,6 +11,7 @@ export interface EditorState {
   events: SearchEvent[];
 
   animationIndex: number;
+  searchResult: SearchResult | null;
 }
 
 export type GridDensity = "empty" | "sparse" | "dense";

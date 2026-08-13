@@ -27,5 +27,6 @@ export function createDefaultEditorState(): EditorState {
     events: [],
 
     animationIndex: 0,
+    searchResult: null,
   };
 }

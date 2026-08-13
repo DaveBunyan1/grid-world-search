@@ -1,4 +1,5 @@
 import {
+  BenchmarkResult,
   GenerateGridRequest,
   Grid,
   SearchRequest,
@@ -37,7 +38,7 @@ class HttpGridSearchApi implements GridSearchApi {
     });
   }
 
-  async search(request: SearchRequest): Promise<SearchResult> {
+  async search(request: SearchRequest): Promise<BenchmarkResult> {
     return this.request("/search", {
       method: "POST",
       body: JSON.stringify(request),

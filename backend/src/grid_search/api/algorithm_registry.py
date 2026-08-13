@@ -10,7 +10,7 @@ from grid_search.models.node import Node
 from grid_search.models.search_result import SearchResult
 
 Algorithm = Callable[
-    [Grid, Node, Node, SearchEventRecorder],
+    [Grid, Node, Node, SearchEventRecorder | None],
     SearchResult,
 ]
 
