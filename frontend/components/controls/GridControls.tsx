@@ -23,7 +23,8 @@ interface GridControlsProps {
 
   onDensityChange(density: GridDensity): void;
 
-  onGenerate(): void;
+  onGenerateUnweighted(): void;
+  onGenerateWeighted(): void;
 }
 
 export default function GridControls({
@@ -31,7 +32,8 @@ export default function GridControls({
   density,
   onSizeChange,
   onDensityChange,
-  onGenerate,
+  onGenerateUnweighted,
+  onGenerateWeighted,
 }: GridControlsProps) {
   return (
     <div className="flex gap-4">
@@ -47,7 +49,8 @@ export default function GridControls({
         onChange={(value) => onDensityChange(value as GridDensity)}
       />
 
-      <Button onClick={onGenerate}>Generate Grid</Button>
+      <Button onClick={onGenerateUnweighted}>Generate Grid</Button>
+      <Button onClick={onGenerateWeighted}>Generate Weighted Grid</Button>
     </div>
   );
 }
