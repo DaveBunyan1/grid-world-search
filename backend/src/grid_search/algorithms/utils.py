@@ -1,5 +1,5 @@
 from grid_search.algorithms.search_event_recorder import SearchEventRecorder
-from grid_search.models.grid import Grid
+from grid_search.models.graph import Graph
 from grid_search.models.node import Node
 
 
@@ -24,10 +24,13 @@ def reconstruct_path(
 
 
 def calculate_path_cost(
-    grid: Grid,
+    graph: Graph,
     path: list[Node],
 ) -> int:
     if len(path) < 2:
         return 0
 
-    return sum(grid.get_cost(node) for node in path[1:])
+    return sum(
+        graph.get_edge_cost(source, destination)
+        for source, destination in zip(path, path[1:], strict=False)
+    )

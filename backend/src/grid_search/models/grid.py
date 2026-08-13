@@ -25,5 +25,10 @@ class Grid:
             and not self.cells[row][col].blocked
         )
 
-    def get_cost(self, node: Node) -> int:
-        return self.cells[node.row][node.col].cost
+    def get_edge_cost(
+        self,
+        source: Node,
+        destination: Node,
+    ) -> int:
+        _ = source  # source used for different graph representations
+        return self.cells[destination.row][destination.col].cost
