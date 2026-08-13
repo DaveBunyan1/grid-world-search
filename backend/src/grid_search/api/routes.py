@@ -9,11 +9,15 @@ from grid_search.api.mappers import (
     search_result_to_schema,
 )
 from grid_search.api.schemas import (
+    AlgorithmComparisonResult,
     BenchmarkResponse,
+    ComparisonRequest,
+    ComparisonResponse,
     GenerateGridRequest,
     GenerateGridResponse,
     SearchRequest,
 )
+from grid_search.benchmarks.comparison import compare_algorithms
 from grid_search.benchmarks.runner import benchmark_search
 from grid_search.generators.grid_generator import create_random_grid
 from grid_search.models.node import Node
@@ -93,3 +97,28 @@ def search(
     )
 
     return payload
+
+
+@router.post("/search/compare", response_model=ComparisonResponse)
+def compare_search(request: ComparisonRequest) -> ComparisonResponse:
+    results = compare_algorithms(
+        grid_from_schema(request.grid),
+        node_from_schema(request.start),
+        node_from_schema(request.goal),
+    )
+
+    comparison_results = [
+        AlgorithmComparisonResult(
+            algorithm=algorithm,
+            runtime_ms=runtime_ms,
+            memory_bytes=memory_bytes,
+            path_found=result.path_found,
+            path_length=result.path_length,
+            nodes_expanded=result.nodes_expanded,
+            nodes_discovered=result.nodes_discovered,
+            total_cost=result.total_cost,
+        )
+        for algorithm, (runtime_ms, memory_bytes, result) in results.items()
+    ]
+
+    return ComparisonResponse(results=comparison_results)

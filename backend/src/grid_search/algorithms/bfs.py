@@ -2,7 +2,7 @@ from collections import deque
 
 from grid_search.algorithms.search_event_recorder import SearchEventRecorder
 from grid_search.algorithms.search_state import SearchState
-from grid_search.algorithms.utils import reconstruct_path
+from grid_search.algorithms.utils import calculate_path_cost, reconstruct_path
 from grid_search.models.grid import Grid
 from grid_search.models.node import Node
 from grid_search.models.search_result import SearchResult
@@ -22,12 +22,14 @@ def bfs(
         state.expand(current)
 
         if current == goal:
+            path = reconstruct_path(state.parents, current, recorder)
             return SearchResult(
-                path=reconstruct_path(state.parents, current, recorder),
+                path=path,
                 expanded_nodes=state.expanded_nodes,
                 nodes_expanded=state.nodes_expanded,
                 nodes_discovered=state.nodes_discovered,
                 events=state.events,
+                total_cost=calculate_path_cost(grid, path),
             )
 
         for neighbour in grid.get_neighbours(current):

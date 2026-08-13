@@ -3,8 +3,8 @@ import {
   GenerateGridRequest,
   Grid,
   SearchRequest,
-  SearchResult,
 } from "@/types/api";
+import { ComparisonRequest, ComparisonResponse } from "@/types/comparison";
 
 export interface GridSearchApi {
   getAlgorithms(): Promise<string[]>;
@@ -12,4 +12,6 @@ export interface GridSearchApi {
   generateGrid(request: GenerateGridRequest): Promise<{ grid: Grid }>;
 
   search(request: SearchRequest): Promise<BenchmarkResult>;
+
+  compareAlgorithms(request: ComparisonRequest): Promise<ComparisonResponse>;
 }

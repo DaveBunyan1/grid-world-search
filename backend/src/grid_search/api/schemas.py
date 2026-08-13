@@ -72,3 +72,28 @@ class BenchmarkResponse(BaseModel):
 
 class GenerateGridResponse(BaseModel):
     grid: GridSchema
+
+
+class AlgorithmComparisonResult(BaseModel):
+    algorithm: str
+    runtime_ms: float
+    memory_bytes: int
+
+    path_found: bool
+    path_length: int | None
+
+    nodes_expanded: int
+    nodes_discovered: int
+
+    total_cost: int | None
+
+
+class ComparisonRequest(BaseModel):
+    grid: GridSchema
+
+    start: NodeSchema
+    goal: NodeSchema
+
+
+class ComparisonResponse(BaseModel):
+    results: list[AlgorithmComparisonResult]
