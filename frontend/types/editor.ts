@@ -6,6 +6,7 @@ export interface EditorState {
   goal: GridNode;
   tool: EditorTool;
   algorithm: string;
+  selectedCost: number;
 
   path: GridNode[];
   events: SearchEvent[];
@@ -21,4 +22,4 @@ export interface GridGenerationConfig {
   density: GridDensity;
 }
 
-export type EditorTool = "wall" | "start" | "goal";
+export type EditorTool = "wall" | "start" | "goal" | "cost";
