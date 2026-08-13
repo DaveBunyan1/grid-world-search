@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 import { api } from "@/lib/api";
+import Select from "../ui/Select";
+import { ALGORITHM_INFO } from "@/lib/algorithms/algorithmInfo";
 
 interface AlgorithmSelectorProps {
   algorithm: string;
@@ -23,16 +25,12 @@ export default function AlgorithmSelector({
     loadAlgorithms();
   }, []);
 
+  const options = algorithms.map((algorithm) => ({
+    value: algorithm,
+    label: ALGORITHM_INFO[algorithm]?.name ?? algorithm,
+  }));
+
   return (
-    <select
-      value={algorithm}
-      onChange={(event) => onAlgorithmChange(event.target.value)}
-    >
-      {algorithms.map((algorithm) => (
-        <option key={algorithm} value={algorithm}>
-          {algorithm}
-        </option>
-      ))}
-    </select>
+    <Select value={algorithm} options={options} onChange={onAlgorithmChange} />
   );
 }

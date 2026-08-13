@@ -1,6 +1,19 @@
 "use client";
 
 import { GridDensity } from "@/types/editor";
+import Button from "../ui/Button";
+import Select from "../ui/Select";
+
+const sizeOptions = [
+  { value: "25", label: "25 × 25" },
+  { value: "50", label: "50 × 50" },
+];
+
+const densityOptions = [
+  { value: "empty", label: "Empty" },
+  { value: "sparse", label: "Sparse" },
+  { value: "dense", label: "Dense" },
+];
 
 interface GridControlsProps {
   size: number;
@@ -21,32 +34,20 @@ export default function GridControls({
   onGenerate,
 }: GridControlsProps) {
   return (
-    <div className="flex gap-4 mb-4">
-      <select
-        value={size}
-        onChange={(e) => onSizeChange(Number(e.target.value))}
-      >
-        <option value={25}>25 x 25</option>
+    <div className="flex gap-4">
+      <Select
+        value={String(size)}
+        options={sizeOptions}
+        onChange={(value) => onSizeChange(Number(value))}
+      />
 
-        <option value={50}>50 x 50</option>
-
-        <option value={100}>100 x 100</option>
-      </select>
-
-      <select
+      <Select
         value={density}
-        onChange={(e) => onDensityChange(e.target.value as GridDensity)}
-      >
-        <option value="empty">Empty</option>
+        options={densityOptions}
+        onChange={(value) => onDensityChange(value as GridDensity)}
+      />
 
-        <option value="sparse">Sparse</option>
-
-        <option value="dense">Dense</option>
-      </select>
-
-      <button onClick={onGenerate} className="border px-4 py-2">
-        Generate Grid
-      </button>
+      <Button onClick={onGenerate}>Generate Grid</Button>
     </div>
   );
 }

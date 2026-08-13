@@ -1,186 +1,83 @@
 "use client";
 
-import { useState, useEffect } from "react";
-
 import GridView from "@/components/grid/GridView";
 import GridControls from "@/components/controls/GridControls";
-
-import { createDefaultEditorState } from "@/lib/grid/createDefaultEditorState";
-import { GridDensity } from "@/types/editor";
-
-import { api } from "@/lib/api";
-import { DENSITY_PROBABILITY } from "@/lib/grid/density";
-import { updateCell } from "@/lib/grid/updateCell";
 import AlgorithmSelector from "@/components/controls/AlgorithmSelector";
-import SearchMetrics from "@/components/SearchMetrics";
-import BenchmarkMetrics from "@/components/BenchmarkMetrics";
+import MetricSidebar from "@/components/metrics/MetricSidebar";
+import { useGridSearch } from "@/hooks/useGridSearch";
+import Button from "@/components/ui/Button";
 
 export default function Home() {
-  const [editor, setEditor] = useState(() => createDefaultEditorState());
+  const {
+    editor,
+    size,
+    density,
+    benchmarkResult,
+    isSearching,
+    isGenerating,
+    error,
+    setSize,
+    setDensity,
+    runSearch,
+    generateGrid,
+    handleAlgorithmChange,
+    handleCellChange,
+    handleMoveStart,
+    handleMoveGoal,
+  } = useGridSearch();
 
-  const [size, setSize] = useState(25);
-
-  const [density, setDensity] = useState<GridDensity>("empty");
-
-  const [runtimeMs, setRuntimeMs] = useState(0);
-  const [memoryBytes, setMemoryBytes] = useState(0);
-
-  function handleAlgorithmChange(algorithm: string) {
-    setEditor((previous) => ({
-      ...previous,
-      algorithm,
-    }));
-  }
-
-  async function runSearch() {
-    const response = await api.search({
-      grid: editor.grid,
-      start: editor.start,
-      goal: editor.goal,
-      algorithm: editor.algorithm,
-    });
-
-    setRuntimeMs(response.runtime_ms);
-    setMemoryBytes(response.memory_bytes);
-
-    const result = response.result;
-
-    console.log(result);
-    setEditor((previous) => ({
-      ...previous,
-      path: result.path,
-      events: result.events,
-      animationIndex: 0,
-      searchResult: result,
-    }));
-  }
-
-  useEffect(() => {
-    if (editor.animationIndex >= editor.events.length) {
-      return;
-    }
-
-    const timer = setTimeout(() => {
-      setEditor((previous) => ({
-        ...previous,
-        animationIndex: previous.animationIndex + 1,
-      }));
-    }, 1);
-
-    return () => clearTimeout(timer);
-  }, [editor.animationIndex, editor.events.length]);
-
-  useEffect(() => {
-    function handleKeyDown(event: KeyboardEvent) {
-      if (event.key === "s") {
-        setEditor((previous) => ({
-          ...previous,
-          tool: "start",
-        }));
-      }
-
-      if (event.key === "g") {
-        setEditor((previous) => ({
-          ...previous,
-          tool: "goal",
-        }));
-      }
-
-      if (event.key === "w") {
-        setEditor((previous) => ({
-          ...previous,
-          tool: "wall",
-        }));
-      }
-    }
-
-    window.addEventListener("keydown", handleKeyDown);
-
-    return () => {
-      window.removeEventListener("keydown", handleKeyDown);
-    };
-  }, []);
-
-  function handleMoveStart(row: number, col: number) {
-    setEditor((previous) => ({
-      ...previous,
-      start: {
-        row,
-        col,
-      },
-    }));
-  }
-
-  function handleMoveGoal(row: number, col: number) {
-    setEditor((previous) => ({
-      ...previous,
-      goal: {
-        row,
-        col,
-      },
-    }));
-  }
-
-  function handleCellChange(row: number, col: number, blocked: boolean) {
-    setEditor((previous) => ({
-      ...previous,
-      grid: updateCell(previous.grid, row, col, blocked),
-    }));
-  }
-
-  async function generateGrid() {
-    const start = editor.start;
-
-    const goal = editor.goal;
-
-    const response = await api.generateGrid({
-      rows: size,
-      cols: size,
-      obstacle_probability: DENSITY_PROBABILITY[density],
-      start,
-      goal,
-    });
-
-    setEditor((previous) => ({
-      ...previous,
-      grid: response.grid,
-      start,
-      goal,
-      path: [],
-      events: [],
-      searchResult: null,
-    }));
-  }
+  const isBusy = isSearching || isGenerating;
 
   return (
-    <main className="p-8">
-      <GridControls
-        size={size}
-        density={density}
-        onSizeChange={setSize}
-        onDensityChange={setDensity}
-        onGenerate={generateGrid}
-      />
+    <main className="min-h-screen pt-4 px-6 bg-gray-950">
+      <header className="mb-4">
+        <h1 className="text-2xl font-semibold tracking-tight text-slate-50">
+          Grid World Search
+        </h1>
+        <p className="mt-1 text-sm text-slate-400">
+          Visualize pathfinding algorithms on a customizable grid.
+        </p>
+      </header>
+      <div className="flex flex-col gap-6 ">
+        <aside className="flex w-full gap-4 lg:w-auto shrink-0">
+          <GridControls
+            size={size}
+            density={density}
+            onSizeChange={setSize}
+            onDensityChange={setDensity}
+            onGenerate={generateGrid}
+          />
 
-      <AlgorithmSelector
-        algorithm={editor.algorithm}
-        onAlgorithmChange={handleAlgorithmChange}
-      />
+          <AlgorithmSelector
+            algorithm={editor.algorithm}
+            onAlgorithmChange={handleAlgorithmChange}
+          />
 
-      <button onClick={runSearch} className="px-4 py-2 border rounded">
-        Search
-      </button>
-      <div className="flex">
-        <GridView
-          editor={editor}
-          onCellChange={handleCellChange}
-          onMoveStart={handleMoveStart}
-          onMoveGoal={handleMoveGoal}
-        />
-        {editor.searchResult && <SearchMetrics result={editor.searchResult} />}
-        {editor.searchResult && (
-          <BenchmarkMetrics runtime_ms={runtimeMs} memory_bytes={memoryBytes} />
-        )}
+          <Button onClick={runSearch} disabled={isBusy}>
+            {isSearching ? "Searching…" : "Run Search"}
+          </Button>
+
+          {error && (
+            <p className="rounded-md bg-red-50 px-3 py-2 text-sm text-red-700">
+              {error}
+            </p>
+          )}
+        </aside>
+        <div className="flex gap-5">
+          <GridView
+            editor={editor}
+            onCellChange={handleCellChange}
+            onMoveStart={handleMoveStart}
+            onMoveGoal={handleMoveGoal}
+          />
+          {editor.searchResult && benchmarkResult && (
+            <MetricSidebar
+              algorithm={editor.algorithm}
+              searchResult={editor.searchResult}
+              benchmark={benchmarkResult}
+            />
+          )}
+        </div>
       </div>
     </main>
   );
