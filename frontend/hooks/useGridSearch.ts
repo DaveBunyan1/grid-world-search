@@ -2,13 +2,14 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { createDefaultEditorState } from "@/lib/grid/createDefaultEditorState";
-import { GridDensity } from "@/types/editor";
+import { EditorTool, GridDensity } from "@/types/editor";
 import { api } from "@/lib/api";
 import { DENSITY_PROBABILITY } from "@/lib/grid/density";
 import { updateCell } from "@/lib/grid/updateCell";
 import { BenchmarkResults } from "@/types/metrics";
 import { ComparisonResponse } from "@/types/comparison";
 import { GridType } from "@/types/api";
+import { updateCellCost } from "@/lib/grid/updateCellCost";
 
 const ANIMATION_DELAY_MS = 16;
 const DEFAULT_SIZE = 25;
@@ -179,6 +180,13 @@ export function useGridSearch() {
     [],
   );
 
+  function handleCellCostChange(row: number, col: number, cost: number) {
+    setEditor((previous) => ({
+      ...previous,
+      grid: updateCellCost(previous.grid, row, col, cost),
+    }));
+  }
+
   const handleMoveStart = useCallback((row: number, col: number) => {
     setEditor((prev) => ({
       ...prev,
@@ -226,10 +234,11 @@ export function useGridSearch() {
   // ─── Keyboard shortcuts ──────────────────────────────────────────
 
   useEffect(() => {
-    const toolMap: Record<string, "start" | "goal" | "wall"> = {
+    const toolMap: Record<string, EditorTool> = {
       s: "start",
       g: "goal",
       w: "wall",
+      c: "cost",
     };
 
     function handleKeyDown(event: KeyboardEvent) {
@@ -271,6 +280,7 @@ export function useGridSearch() {
     // Setters for controls
     setSize,
     setDensity,
+    setEditor,
 
     // Actions
     runSearch,
@@ -283,5 +293,6 @@ export function useGridSearch() {
     handleCellChange,
     handleMoveStart,
     handleMoveGoal,
+    handleCellCostChange,
   };
 }

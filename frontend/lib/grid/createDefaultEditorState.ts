@@ -23,6 +23,7 @@ export function createDefaultEditorState(): EditorState {
     tool: "wall",
 
     algorithm: "astar",
+    selectedCost: 1,
     path: [],
     events: [],
 
