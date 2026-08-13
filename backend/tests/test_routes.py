@@ -83,9 +83,9 @@ def test_search_bfs():
 
     result = response.json()
 
-    assert result["path_found"] is True
-    assert result["path_length"] == 3
-    assert result["nodes_expanded"] > 0
+    assert result["result"]["path_found"] is True
+    assert result["result"]["path_length"] == 2
+    assert result["result"]["nodes_expanded"] > 0
 
 
 def test_search_returns_events():
@@ -119,7 +119,7 @@ def test_search_returns_events():
 
     assert response.status_code == 200
 
-    data = response.json()
+    data = response.json()["result"]
 
     assert len(data["events"]) > 0
 
@@ -155,7 +155,7 @@ def test_search_returns_path_events():
         },
     )
 
-    data = response.json()
+    data = response.json()["result"]
 
     path_events = [event for event in data["events"] if event["event_type"] == "path"]
 
