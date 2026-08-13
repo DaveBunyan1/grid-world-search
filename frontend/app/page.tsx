@@ -6,6 +6,7 @@ import AlgorithmSelector from "@/components/controls/AlgorithmSelector";
 import MetricSidebar from "@/components/metrics/MetricSidebar";
 import { useGridSearch } from "@/hooks/useGridSearch";
 import Button from "@/components/ui/Button";
+import AlgorithmComparison from "@/components/metrics/AlgorithmComparison";
 
 export default function Home() {
   const {
@@ -14,11 +15,14 @@ export default function Home() {
     density,
     benchmarkResult,
     isSearching,
+    isComparing,
     isGenerating,
     error,
+    comparison,
     setSize,
     setDensity,
     runSearch,
+    runComparison,
     generateGrid,
     handleAlgorithmChange,
     handleCellChange,
@@ -57,6 +61,10 @@ export default function Home() {
             {isSearching ? "Searching…" : "Run Search"}
           </Button>
 
+          <Button onClick={runComparison} disabled={isBusy}>
+            {isComparing ? "Comparing..." : "Compare"}
+          </Button>
+
           {error && (
             <p className="rounded-md bg-red-50 px-3 py-2 text-sm text-red-700">
               {error}
@@ -77,6 +85,7 @@ export default function Home() {
               benchmark={benchmarkResult}
             />
           )}
+          {comparison && <AlgorithmComparison results={comparison.results} />}
         </div>
       </div>
     </main>

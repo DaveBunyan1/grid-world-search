@@ -7,6 +7,7 @@ import { api } from "@/lib/api";
 import { DENSITY_PROBABILITY } from "@/lib/grid/density";
 import { updateCell } from "@/lib/grid/updateCell";
 import { BenchmarkResults } from "@/types/metrics";
+import { ComparisonResponse } from "@/types/comparison";
 
 const ANIMATION_DELAY_MS = 16;
 const DEFAULT_SIZE = 25;
@@ -17,8 +18,10 @@ export function useGridSearch() {
   const [density, setDensity] = useState<GridDensity>("empty");
   const [benchmarkResult, setBenchmarkResult] =
     useState<BenchmarkResults | null>(null);
+  const [comparison, setComparison] = useState<ComparisonResponse | null>(null);
 
   const [isSearching, setIsSearching] = useState(false);
+  const [isComparing, setIsComparing] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -39,7 +42,7 @@ export function useGridSearch() {
   // ─── Core actions ────────────────────────────────────────────────
 
   const runSearch = useCallback(async () => {
-    if (isSearching) return;
+    if (isSearching || isComparing) return;
 
     setIsSearching(true);
     setError(null);
@@ -82,11 +85,34 @@ export function useGridSearch() {
     clearResults,
   ]);
 
+  const runComparison = useCallback(async () => {
+    if (isSearching || isComparing) return;
+
+    setIsComparing(true);
+    setError(null);
+
+    try {
+      const response = await api.compareAlgorithms({
+        grid: editor.grid,
+        start: editor.start,
+        goal: editor.goal,
+      });
+      setComparison(response);
+    } catch (err) {
+      setError(
+        err instanceof Error ? err.message : "Algorithm comparison failed",
+      );
+    } finally {
+      setIsComparing(false);
+    }
+  }, [editor.grid, editor.start, editor.goal, isSearching, isComparing]);
+
   const generateGrid = useCallback(async () => {
     if (isGenerating) return;
 
     setIsGenerating(true);
     setError(null);
+    setComparison(null);
 
     const sizeChanged = editor.grid.cells.length !== size;
 
@@ -229,8 +255,10 @@ export function useGridSearch() {
     density,
     benchmarkResult,
     isSearching,
+    isComparing,
     isGenerating,
     error,
+    comparison,
 
     // Setters for controls
     setSize,
@@ -240,6 +268,7 @@ export function useGridSearch() {
     runSearch,
     generateGrid,
     clearResults,
+    runComparison,
 
     // Handlers for GridView / selectors
     handleAlgorithmChange,
