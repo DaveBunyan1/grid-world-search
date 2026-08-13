@@ -20,7 +20,7 @@ from grid_search.api.schemas import (
 from grid_search.benchmarks.comparison import compare_algorithms
 from grid_search.benchmarks.runner import benchmark_search
 from grid_search.generators.grid_generator import create_random_grid
-from grid_search.models.node import Node
+from grid_search.generators.weighted_grid_generator import generate_weighted_grid
 
 router = APIRouter()
 
@@ -43,28 +43,26 @@ def generate_grid(
     request: GenerateGridRequest,
 ) -> GenerateGridResponse:
 
-    start = Node(
-        request.start.row,
-        request.start.col,
-    )
+    if request.grid_type == "weighted":
+        grid = generate_weighted_grid(
+            rows=request.rows,
+            cols=request.cols,
+            obstacle_probability=request.obstacle_probability,
+            start=node_from_schema(request.start),
+            goal=node_from_schema(request.goal),
+            min_cost=request.min_cost,
+            max_cost=request.max_cost,
+        )
+    else:
+        grid = create_random_grid(
+            rows=request.rows,
+            cols=request.cols,
+            obstacle_probability=request.obstacle_probability,
+            start=node_from_schema(request.start),
+            goal=node_from_schema(request.goal),
+        )
 
-    goal = Node(
-        request.goal.row,
-        request.goal.col,
-    )
-
-    grid = create_random_grid(
-        rows=request.rows,
-        cols=request.cols,
-        start=start,
-        goal=goal,
-        obstacle_probability=request.obstacle_probability,
-        seed=request.seed,
-    )
-
-    return GenerateGridResponse(
-        grid=grid_to_schema(grid),
-    )
+    return GenerateGridResponse(grid=grid_to_schema(grid))
 
 
 @router.post(
