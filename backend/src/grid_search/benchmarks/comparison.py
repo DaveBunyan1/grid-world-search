@@ -2,6 +2,9 @@ from grid_search.api.algorithm_registry import ALGORITHMS
 from grid_search.api.schemas import RepresentationMetrics
 from grid_search.benchmarks.runner import benchmark_search
 from grid_search.graphs.adjacency_list import AdjacencyListGraph
+from grid_search.graphs.adjacency_list_cost_map import AdjacencyListWithCostMap
+from grid_search.graphs.adjacency_matrix import AdjacencyMatrix
+from grid_search.graphs.csr import CSR
 from grid_search.graphs.grid import Grid
 from grid_search.models.node import Node
 from grid_search.models.search_result import SearchResult
@@ -16,6 +19,9 @@ def compare_algorithms(
     representations = {
         "grid": grid,
         "adjacency_list": AdjacencyListGraph.from_cells(grid.cells),
+        "adjacency_list_cm": AdjacencyListWithCostMap.from_cells(grid.cells),
+        "csr": CSR.from_cells(grid.cells),
+        "adjacency_matrix": AdjacencyMatrix.from_cells(grid.cells),
     }
     results = {}
 
