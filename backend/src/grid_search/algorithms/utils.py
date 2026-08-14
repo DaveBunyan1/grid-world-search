@@ -1,5 +1,5 @@
 from grid_search.algorithms.search_event_recorder import SearchEventRecorder
-from grid_search.models.graph import Graph
+from grid_search.graphs.graph import Graph
 from grid_search.models.node import Node
 
 

@@ -1,6 +1,6 @@
 from grid_search.generators.grid_generator import create_random_grid
 from grid_search.generators.weights_generator import assign_random_weights
-from grid_search.models.grid import Grid
+from grid_search.graphs.grid import Grid
 from grid_search.models.node import Node
 
 

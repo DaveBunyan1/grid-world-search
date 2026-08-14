@@ -1,6 +1,6 @@
 from grid_search.api.algorithm_registry import ALGORITHMS
 from grid_search.benchmarks.runner import benchmark_search
-from grid_search.models.grid import Grid
+from grid_search.graphs.grid import Grid
 from grid_search.models.node import Node
 from grid_search.models.search_result import SearchResult
 

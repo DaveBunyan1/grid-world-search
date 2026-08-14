@@ -1,8 +1,9 @@
+from grid_search.graphs.graph import Graph
 from grid_search.models.cell import Cell
 from grid_search.models.node import Node
 
 
-class Grid:
+class Grid(Graph):
     def __init__(self, cells: list[list[Cell]]):
         self.cells = cells
 
