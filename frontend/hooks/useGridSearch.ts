@@ -85,6 +85,7 @@ export function useGridSearch() {
     editor.goal,
     editor.algorithm,
     isSearching,
+    isComparing,
     clearResults,
   ]);
 
@@ -152,7 +153,14 @@ export function useGridSearch() {
         setIsGenerating(false);
       }
     },
-    [size, density, editor.start, editor.goal, isGenerating],
+    [
+      size,
+      density,
+      editor.start,
+      editor.goal,
+      editor.grid.cells.length,
+      isGenerating,
+    ],
   );
 
   // ─── Editor mutation handlers ────────────────────────────────────
