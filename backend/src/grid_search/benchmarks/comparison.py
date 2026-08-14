@@ -1,5 +1,7 @@
 from grid_search.api.algorithm_registry import ALGORITHMS
+from grid_search.api.schemas import RepresentationMetrics
 from grid_search.benchmarks.runner import benchmark_search
+from grid_search.graphs.adjacency_list import AdjacencyListGraph
 from grid_search.graphs.grid import Grid
 from grid_search.models.node import Node
 from grid_search.models.search_result import SearchResult
@@ -9,21 +11,41 @@ def compare_algorithms(
     grid: Grid,
     start: Node,
     goal: Node,
-) -> dict[str, tuple[float, int, SearchResult]]:
+) -> dict[str, tuple[SearchResult, list[RepresentationMetrics]]]:
+
+    representations = {
+        "grid": grid,
+        "adjacency_list": AdjacencyListGraph.from_cells(grid.cells),
+    }
     results = {}
 
-    for name, algorithm in ALGORITHMS.items():
-        runtime_ms, memory_bytes, result = benchmark_search(
-            algorithm,
-            grid,
-            start,
-            goal,
-        )
+    for algorithm_name, algorithm in ALGORITHMS.items():
+        representation_results = []
 
-        results[name] = (
-            runtime_ms,
-            memory_bytes,
-            result,
+        search_result = None
+
+        for representation_name, graph in representations.items():
+            runtime_ms, memory_bytes, result = benchmark_search(
+                algorithm,
+                graph,
+                start,
+                goal,
+            )
+
+            representation_results.append(
+                RepresentationMetrics(
+                    representation=representation_name,
+                    runtime_ms=runtime_ms,
+                    memory_bytes=memory_bytes,
+                )
+            )
+
+            if search_result is None:
+                search_result = result
+
+        results[algorithm_name] = (
+            search_result,
+            representation_results,
         )
 
     return results

@@ -85,8 +85,6 @@ class GenerateGridResponse(BaseModel):
 
 class AlgorithmComparisonResult(BaseModel):
     algorithm: str
-    runtime_ms: float
-    memory_bytes: int
 
     path_found: bool
     path_length: int | None
@@ -95,6 +93,8 @@ class AlgorithmComparisonResult(BaseModel):
     nodes_discovered: int
 
     total_cost: int | None
+
+    representations: list[RepresentationMetrics]
 
 
 class ComparisonRequest(BaseModel):
@@ -106,3 +106,9 @@ class ComparisonRequest(BaseModel):
 
 class ComparisonResponse(BaseModel):
     results: list[AlgorithmComparisonResult]
+
+
+class RepresentationMetrics(BaseModel):
+    representation: str
+    runtime_ms: float
+    memory_bytes: int
