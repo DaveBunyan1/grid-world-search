@@ -21,10 +21,6 @@ function formatRepresentationName(name: string): string {
 export default function AlgorithmComparison({
   results,
 }: AlgorithmComparisonProps) {
-  if (results.length === 0) {
-    return null;
-  }
-
   const representations = useMemo(() => {
     const seen = new Set<string>();
     const ordered: string[] = [];
@@ -40,6 +36,10 @@ export default function AlgorithmComparison({
 
     return ordered;
   }, [results]);
+
+  if (results.length === 0) {
+    return null;
+  }
 
   function getRepMetrics(result: AlgorithmComparisonResult, repName: string) {
     return result.representations.find((r) => r.representation === repName);
