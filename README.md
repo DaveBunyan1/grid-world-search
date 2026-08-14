@@ -1,23 +1,56 @@
 # Grid World Search
 
-A Python project for implementing, comparing, and visualising classical graph search algorithms on grid-based environments.
+An interactive pathfinding visualizer and benchmarking application for comparing graph search algorithms on grid-based environments.
 
-The project explores both the theoretical and practical behaviour of search algorithms through benchmarking, documentation, and an interactive frontend (currently in development).
+The project combines algorithm visualization, performance benchmarking, weighted graphs, and algorithm comparison in a full-stack application.
 
 ---
 
 ## Features
 
+- Interactive grid editor
+- Random grid generation
+- Adjustable grid size and obstacle density
+- Start and goal node placement
+- Animated search visualization
+- Custom cell weights
+- Weighted and unweighted grids
+- Algorithm performance comparison
+- Runtime and memory benchmarking
+- Search metrics including:
+  - Nodes expanded
+  - Nodes discovered
+  - Path length
+  - Path cost
+  - Path found
+
 ### Search Algorithms
+
+Currently implemented:
 
 - Breadth-First Search (BFS)
 - Depth-First Search (DFS)
 - Dijkstra's Algorithm
 - A\* Search
 
+### Algorithm comparison
+
+The application can run all algorithms against the same grid and compare
+their:
+
+- Runtime
+- Memory usage
+- Nodes expanded
+- Nodes discovered
+- Path length
+- Path cost
+
+On weighted graphs, this also demonstrates the difference between minimizing
+the number of edges and minimizing total path cost.
+
 ### Grid Generation
 
-- Random grid generation
+- Random weighted and unweighted grid generation
 - Configurable obstacle density
 - Reproducible grids using random seeds
 
@@ -42,60 +75,175 @@ Results are exported as CSV files and can be analysed using pandas or visualised
 
 ---
 
+## Architecture
+
+The project consists of a Next.js frontend and a Python/FastAPI backend.
+
+```text
+┌──────────────────────┐
+│      Next.js         │
+│      Frontend        │
+│                      │
+│  Grid visualization  │
+│  Controls & metrics  │
+└──────────┬───────────┘
+           │ HTTP
+           ▼
+┌──────────────────────┐
+│       FastAPI        │
+│       Backend        │
+│                      │
+│ Search algorithms    │
+│ Grid generation      │
+│ Benchmarking         │
+└──────────────────────┘
+```
+
+### Backend
+
+- Python
+- FastAPI
+- pytest
+- dataclasses
+- tracemalloc
+- perf_counter
+
+### Frontend
+
+- Next.js
+- React
+- TypeScript
+- Tailwind CSS
+
+---
+
+## Running Locally
+
+### Prerequisites
+
+- Docker Desktop
+
+### Docker Compose
+
+The easiest way to run the application is with Docker Compose.
+
+Clone the repository:
+
+```bash
+git clone <repository-url>
+cd grid-world-search
+```
+
+Start the application:
+
+```bash
+docker compose up --build
+```
+
+The frontend will be available at:
+
+```text
+http://localhost:3000
+```
+
+The backend API will be available at:
+
+```text
+http://localhost:8000
+```
+
+FastAPI's interactive API documentation is available at:
+
+```text
+http://localhost:8000/docs
+```
+
+To stop the application:
+
+```bash
+docker compose down
+```
+
+## Running Without Docker
+
+### Backend
+
+```bash
+cd backend
+
+pip install -e ".[dev]"
+
+python -m pytest
+```
+
+Start the API:
+
+```bash
+uvicorn grid_search.api.app:app --reload
+```
+
+### Frontend
+
+```bash
+cd frontend
+
+npm install
+npm run dev
+```
+
+The frontend will be available at:
+
+```text
+http://localhost:3000
+```
+
+## Docker
+
+Both the frontend and backend are containerized.
+
+Build the containers:
+
+```bash
+docker compose build
+```
+
+Run them:
+
+```bash
+docker compose up
+```
+
+The Docker setup is also used by CI to verify that both applications can be built successfully.
+
 ## Project Structure
 
 ```text
-backend/
-├── docs/
-├── pyproject.toml
-├── src/
-│   ├── grid_search/
-│   │   ├── algorithms/
-│   │   ├── api/
-│   │   ├── benchmarks/
-│   │   ├── generators/
-│   │   ├── models/
-│   │   └── ...
-│   └── scripts/
-└── tests/
-```
-
----
-
-## Installation
-
-Create a virtual environment:
-
-```bash
-python -m venv .venv
-```
-
-Activate it.
-
-### Windows
-
-```bash
-.venv\Scripts\activate
-```
-
-### Linux / macOS
-
-```bash
-source .venv/bin/activate
-```
-
-Install the project in editable mode:
-
-```bash
-pip install -e ".[dev]"
-```
-
----
-
-## Running Tests
-
-```bash
-pytest
+grid-world-search/
+├── backend/
+│   ├── src/
+│   │   └── grid_search/
+│   │       ├── algorithms/
+│   │       ├── api/
+│   │       ├── benchmarks/
+│   │       ├── generators/
+│   │       └── models/
+│   ├── tests/
+│   ├── Dockerfile
+│   └── pyproject.toml
+│
+├── frontend/
+│   ├── app/
+│   ├── components/
+│   ├── lib/
+│   ├── types/
+│   ├── Dockerfile
+│   └── package.json
+│
+├── .github/
+│   └── workflows/
+│
+├── docker-compose.yml
+└── README.md
 ```
 
 ---
@@ -128,24 +276,6 @@ docs/benchmark_results/
 
 ---
 
-## Running the API
-
-Start the development server:
-
-```bash
-uvicorn grid_search.api.app:app --reload
-```
-
-Open:
-
-```text
-http://127.0.0.1:8000/docs
-```
-
-to access the automatically generated OpenAPI documentation.
-
----
-
 ## Documentation
 
 Additional documentation can be found in the `docs/` directory.
@@ -172,21 +302,22 @@ Current documentation includes:
 - CSV export
 - Benchmark analysis
 - Benchmark visualisation
-
-### In Progress
-
 - FastAPI backend
 - Interactive frontend
 - Search visualisation and animation
+- Algorithm Comparison
+- Weighted Grids
+- Custom cell weights
+- Docker
+- GitHub Actions CI
 
-### Planned
+### In Progress
 
-- Weighted terrain
+- Alternative graph representations
+- Comparison of alternative graph representations
 - Additional search algorithms
 - Maze generation
-- Live algorithm visualisation
 - Performance optimisations
-- Comparison of alternative graph representations
 
 ---
 
