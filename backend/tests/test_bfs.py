@@ -1,6 +1,6 @@
 from grid_search.algorithms.bfs import bfs
+from grid_search.graphs.grid import Grid
 from grid_search.models.cell import Cell
-from grid_search.models.grid import Grid
 from grid_search.models.node import Node
 
 

@@ -6,7 +6,7 @@ from grid_search.api.algorithm_registry import Algorithm
 from grid_search.benchmarks.config import BenchmarkConfig
 from grid_search.benchmarks.models import BenchmarkRecord
 from grid_search.generators.grid_generator import create_random_grid
-from grid_search.models.grid import Grid
+from grid_search.graphs.grid import Grid
 from grid_search.models.node import Node
 from grid_search.models.search_result import SearchResult
 

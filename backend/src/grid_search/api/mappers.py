@@ -5,8 +5,8 @@ from grid_search.api.schemas import (
     SearchEventSchema,
     SearchResponse,
 )
+from grid_search.graphs.grid import Grid
 from grid_search.models.cell import Cell
-from grid_search.models.grid import Grid
 from grid_search.models.node import Node
 from grid_search.models.search_event import SearchEvent
 from grid_search.models.search_result import SearchResult

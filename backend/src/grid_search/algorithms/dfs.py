@@ -1,7 +1,7 @@
 from grid_search.algorithms.search_event_recorder import SearchEventRecorder
 from grid_search.algorithms.search_state import SearchState
 from grid_search.algorithms.utils import calculate_path_cost, reconstruct_path
-from grid_search.models.graph import Graph
+from grid_search.graphs.graph import Graph
 from grid_search.models.node import Node
 from grid_search.models.search_result import SearchResult
 

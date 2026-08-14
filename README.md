@@ -310,11 +310,11 @@ Current documentation includes:
 - Custom cell weights
 - Docker
 - GitHub Actions CI
+- Alternative graph representations
+- Comparison of alternative graph representations
 
 ### In Progress
 
-- Alternative graph representations
-- Comparison of alternative graph representations
 - Additional search algorithms
 - Maze generation
 - Performance optimisations

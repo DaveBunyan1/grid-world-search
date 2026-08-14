@@ -1,7 +1,7 @@
 from grid_search.algorithms.astar import astar
 from grid_search.algorithms.dijkstra import dijkstra
+from grid_search.graphs.grid import Grid
 from grid_search.models.cell import Cell
-from grid_search.models.grid import Grid
 from grid_search.models.node import Node
 
 

@@ -108,15 +108,14 @@ def compare_search(request: ComparisonRequest) -> ComparisonResponse:
     comparison_results = [
         AlgorithmComparisonResult(
             algorithm=algorithm,
-            runtime_ms=runtime_ms,
-            memory_bytes=memory_bytes,
             path_found=result.path_found,
             path_length=result.path_length,
             nodes_expanded=result.nodes_expanded,
             nodes_discovered=result.nodes_discovered,
             total_cost=result.total_cost,
+            representations=representation_metrics,
         )
-        for algorithm, (runtime_ms, memory_bytes, result) in results.items()
+        for algorithm, (result, representation_metrics) in results.items()
     ]
 
     return ComparisonResponse(results=comparison_results)
