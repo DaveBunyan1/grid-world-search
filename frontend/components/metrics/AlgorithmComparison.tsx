@@ -4,9 +4,18 @@ import {
   formatAlgorithmName,
   formatMemory,
 } from "./ComparisonHelpers";
+import { useMemo } from "react";
 
 interface AlgorithmComparisonProps {
   results: AlgorithmComparisonResult[];
+}
+
+function formatRepresentationName(name: string): string {
+  // "adjacency_list" → "Adjacency list", "grid" → "Grid"
+  return name
+    .split("_")
+    .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+    .join(" ");
 }
 
 export default function AlgorithmComparison({
@@ -14,6 +23,26 @@ export default function AlgorithmComparison({
 }: AlgorithmComparisonProps) {
   if (results.length === 0) {
     return null;
+  }
+
+  const representations = useMemo(() => {
+    const seen = new Set<string>();
+    const ordered: string[] = [];
+
+    for (const result of results) {
+      for (const rep of result.representations) {
+        if (!seen.has(rep.representation)) {
+          seen.add(rep.representation);
+          ordered.push(rep.representation);
+        }
+      }
+    }
+
+    return ordered;
+  }, [results]);
+
+  function getRepMetrics(result: AlgorithmComparisonResult, repName: string) {
+    return result.representations.find((r) => r.representation === repName);
   }
 
   return (
@@ -69,19 +98,28 @@ export default function AlgorithmComparison({
               )}
             />
 
-            <ComparisonRow
-              label="Runtime"
-              values={results.map(
-                (result) => `${result.runtime_ms.toFixed(2)} ms`,
-              )}
-            />
-
-            <ComparisonRow
-              label="Memory"
-              values={results.map((result) =>
-                formatMemory(result.memory_bytes),
-              )}
-            />
+            {representations.map((repName) => (
+              <>
+                <ComparisonRow
+                  key={`${repName}-runtime`}
+                  label={`${formatRepresentationName(repName)} — Runtime`}
+                  values={results.map((result) => {
+                    const metrics = getRepMetrics(result, repName);
+                    return metrics
+                      ? `${metrics.runtime_ms.toFixed(2)} ms`
+                      : "—";
+                  })}
+                />
+                <ComparisonRow
+                  key={`${repName}-memory`}
+                  label={`${formatRepresentationName(repName)} — Memory`}
+                  values={results.map((result) => {
+                    const metrics = getRepMetrics(result, repName);
+                    return metrics ? formatMemory(metrics.memory_bytes) : "—";
+                  })}
+                />
+              </>
+            ))}
           </tbody>
         </table>
       </div>

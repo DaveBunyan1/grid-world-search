@@ -2,8 +2,6 @@ import { Grid, GridNode } from "./api";
 
 export interface AlgorithmComparisonResult {
   algorithm: string;
-  runtime_ms: number;
-  memory_bytes: number;
 
   path_found: boolean;
   path_length: number | null;
@@ -12,6 +10,8 @@ export interface AlgorithmComparisonResult {
   nodes_discovered: number;
 
   total_cost: number | null;
+
+  representations: RepresentationMetrics[];
 }
 
 export interface ComparisonResponse {
@@ -22,4 +22,10 @@ export interface ComparisonRequest {
   grid: Grid;
   start: GridNode;
   goal: GridNode;
+}
+
+export interface RepresentationMetrics {
+  representation: string;
+  runtime_ms: number;
+  memory_bytes: number;
 }
