@@ -84,7 +84,7 @@ def search(
         grid_from_schema(request.grid),
         node_from_schema(request.start),
         node_from_schema(request.goal),
-        recorder,
+        recorder=recorder,
     )
 
     payload = BenchmarkResponse(
